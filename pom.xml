@@ -27,6 +27,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.hikvision.ga</groupId>
+            <artifactId>artemis-http-client</artifactId>
+            <version>1.1.2</version>
+        </dependency>
         <!-- JDBC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -117,11 +122,11 @@
             <scope>runtime</scope>
         </dependency>
         <!--Oracle 驱动-->
-        <!--<dependency>-->
-        <!--<groupId>com.oracle</groupId>-->
-        <!--<artifactId>ojdbc6</artifactId>-->
-        <!--<version>11.2.0.3</version>-->
-        <!--</dependency>-->
+        <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>ojdbc6</artifactId>
+        <version>11.2.0.3</version>
+        </dependency>
         <!--swagger-->
         <dependency>
             <groupId>io.springfox</groupId>

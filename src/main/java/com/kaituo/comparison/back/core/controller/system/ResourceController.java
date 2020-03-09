@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
  *
  * @version 2018/4/22
  */
-@RestController
-@RequestMapping(value = "/system/resource")
+//@RestController
+//@RequestMapping(value = "/system/resource")
 @Api(tags = {"资源管理"})
 public class ResourceController {
 

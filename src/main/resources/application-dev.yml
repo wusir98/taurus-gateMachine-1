@@ -7,13 +7,16 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
     min-response-size: 1024
   port: 1001
-
+hk:
+  host: 192.168.110.202:443
+  appKey: 29584542
+  appSecret: QiLH9PsxKqHd2jTT9y9d
 spring:
   datasource:
-    url: jdbc:mysql://139.224.14.200:3306/background?useSSL=false&useUnicode=yes&characterEncoding=UTF8
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:oracle:thin:@192.168.110.201:1521:icprod
+    username: icprod
+    password: iland2020
+    driverClassName: oracle.jdbc.driver.OracleDriver
     hikari:
       max-lifetime: 60000
       maximum-pool-size: 15
