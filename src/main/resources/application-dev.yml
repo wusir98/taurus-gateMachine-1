@@ -14,8 +14,8 @@ hk:
 spring:
   datasource:
     url: jdbc:oracle:thin:@192.168.110.201:1521:icprod
-    username: icprod
-    password: iland2020
+    username: icprod2
+    password: root123
     driverClassName: oracle.jdbc.driver.OracleDriver
     hikari:
       max-lifetime: 60000

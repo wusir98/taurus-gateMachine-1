@@ -2,7 +2,6 @@ package com.kaituo.comparison.back.common.util;
 
 import com.kaituo.comparison.back.common.bean.ResponseCode;
 import com.kaituo.comparison.back.common.exception.RequestException;
-import com.kaituo.comparison.back.core.config.jwt.JwtToken;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.subject.Subject;
@@ -53,37 +52,5 @@ public class Tools {
         return accept != null && accept.contains("application/json") || (request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").contains("XMLHttpRequest"));
     }
 
-    public static boolean executeLogin(ServletRequest request){
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String authorization = httpServletRequest.getHeader("Authorization");
-        if(authorization==null || "".equals(authorization.trim())){
-            throw RequestException.fail("未含授权标示，禁止访问");
-        }
-        JwtToken token = new JwtToken(authorization,null,null);
-        // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-        Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(token);
-        }catch (DisabledAccountException e){
-            if(e.getMessage().equals("verifyFail")){
-                throw new RequestException(ResponseCode.NOT_SING_IN.code,"身份已过期，请重新登录",e);
-            }
-            throw new RequestException(ResponseCode.SIGN_IN_INPUT_FAIL.code,e.getMessage(),e);
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new RequestException(ResponseCode.SIGN_IN_FAIL,e);
-        }
-        // 如果没有抛出异常则代表登入成功，返回true
-        return true;
-    }
-
-    public static synchronized void executeLogin(){
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        boolean b = Tools.executeLogin(request);
-        if(!b){
-            throw RequestException.fail("身份已过期或无效，请重新认证");
-        }
-    }
 
 }

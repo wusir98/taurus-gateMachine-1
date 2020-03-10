@@ -16,40 +16,40 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestException extends RuntimeException implements Serializable {
-    private Integer status;
+    private String code;
     private String msg;
     private Exception e;
 
     public RequestException(ResponseCode statusEnum, Exception e) {
-        this.status = statusEnum.code;
+        this.code = statusEnum.code;
         this.msg = statusEnum.msg;
         this.e = e;
     }
 
 
     public RequestException(ResponseCode statusEnum) {
-        this.status = statusEnum.code;
+        this.code = statusEnum.code;
         this.msg = statusEnum.msg;
     }
 
     public synchronized static RequestException fail(String msg){
         return RequestException.builder()
-                .status(ResponseCode.FAIL.code)
+                .code(ResponseCode.OTHER_ERROR.code)
                 .msg(msg)
                 .build();
     }
 
     public synchronized static RequestException fail(String msg,Exception e){
         return RequestException.builder()
-                .status(ResponseCode.FAIL.code)
+                .code(ResponseCode.OTHER_ERROR.code)
                 .msg(msg)
                 .e(e)
                 .build();
     }
 
-    public synchronized static RequestException fail(Integer code,String msg,Exception e){
+    public synchronized static RequestException fail(String code,String msg,Exception e){
         return RequestException.builder()
-                .status(code)
+                .code(code)
                 .msg(msg)
                 .e(e)
                 .build();

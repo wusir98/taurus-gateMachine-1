@@ -9,8 +9,6 @@
 package com.kaituo.comparison.back.common.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.kaituo.comparison.back.core.config.jwt.JwtToken;
-import com.kaituo.comparison.back.core.config.shiro.SecurityUser;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -30,25 +28,9 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        JwtToken user = SecurityUser.getUser();
-        Date date = new Date();
-
-        //创建者
-        setFieldValByName(CREATOR, user.getUid(), metaObject);
-        //创建时间
-        setFieldValByName(CREATE_DATE, date, metaObject);
-
-        //更新者
-        setFieldValByName(UPDATER, user.getUid(), metaObject);
-        //更新时间
-        setFieldValByName(UPDATE_DATE, date, metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        //更新者
-        setFieldValByName(UPDATER, SecurityUser.getUserId(), metaObject);
-        //更新时间
-        setFieldValByName(UPDATE_DATE, new Date(), metaObject);
     }
 }

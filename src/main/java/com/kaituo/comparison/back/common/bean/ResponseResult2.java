@@ -29,7 +29,18 @@ public class ResponseResult2<T> implements Serializable {
 
     @ApiModelProperty(value = "响应回执消息")
     private String msg;
+    public synchronized static <T> ResponseResult2<T> e(ResponseCode statusEnum) {
 
+        return e(statusEnum,null);
+    }
+
+    public synchronized static <T> ResponseResult2<T> e(ResponseCode statusEnum, T data) {
+        ResponseResult2<T> res = new ResponseResult2<>();
+        res.setCode(statusEnum.code);
+        res.setMsg(statusEnum.msg);
+        res.setData(data);
+        return res;
+    }
 
     private static final long serialVersionUID = 8992436576262574064L;
 }
