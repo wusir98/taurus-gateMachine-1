@@ -10,8 +10,6 @@ import com.kaituo.comparison.back.core.service.system.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class LogServiceImpl implements LogService {
     @Autowired
@@ -20,10 +18,8 @@ public class LogServiceImpl implements LogService {
     OrganizationMapper organizationMapper;
 
     @Override
-    public String addLog(Param param, String token) {
-        String id = UUID.randomUUID().toString().replace("-", "").toUpperCase();
+    public Log addLog(Param param, String token) {
         Log log=new Log();
-        log.setId(id);
         log.setParam(param.getParam().toString());
         log.setUri(param.getUri());
         Organization organization = organizationMapper.selectOne(
@@ -32,15 +28,11 @@ public class LogServiceImpl implements LogService {
         log.setOrganizationId(organization.getOrganizationId());
         System.out.println(log);
         logMapper.insert(log);
-        return id;
+        return log;
     }
 
     @Override
-    public void update(String id,String result,String msg) {
-        Log log=new Log();
-        log.setId(id);
-        log.setResult(result);
-        log.setMsg(msg);
+    public void update(Log log) {
         logMapper.updateById(log);
     }
 }

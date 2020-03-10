@@ -18,7 +18,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @ApiModel(value = "请求结果响应体")
-public class ResponseResult2<T> implements Serializable {
+public class ResponseResult<T> implements Serializable {
 
 
     @ApiModelProperty(value = "响应状态回执码")
@@ -29,13 +29,14 @@ public class ResponseResult2<T> implements Serializable {
 
     @ApiModelProperty(value = "响应回执消息")
     private String msg;
-    public synchronized static <T> ResponseResult2<T> e(ResponseCode statusEnum) {
+
+    public synchronized static <T> ResponseResult<T> e(ResponseCode statusEnum) {
 
         return e(statusEnum,null);
     }
 
-    public synchronized static <T> ResponseResult2<T> e(ResponseCode statusEnum, T data) {
-        ResponseResult2<T> res = new ResponseResult2<>();
+    public synchronized static <T> ResponseResult<T> e(ResponseCode statusEnum, T data) {
+        ResponseResult<T> res = new ResponseResult<>();
         res.setCode(statusEnum.code);
         res.setMsg(statusEnum.msg);
         res.setData(data);

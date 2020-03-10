@@ -2,7 +2,7 @@ package com.kaituo.comparison.back.common.handler;
 
 
 import com.kaituo.comparison.back.common.bean.ResponseCode;
-import com.kaituo.comparison.back.common.bean.ResponseResult2;
+import com.kaituo.comparison.back.common.bean.ResponseResult;
 import com.kaituo.comparison.back.common.exception.RequestException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,22 +24,22 @@ import java.util.List;
 public class GlobalDefaultExceptionHandler {
     @ExceptionHandler(value = RequestException.class)
     @ResponseBody
-    public ResponseResult2 requestExceptionHandler(RequestException e){
+    public ResponseResult requestExceptionHandler(RequestException e) {
         if(e.getE()!=null) e.printStackTrace();
-        return ResponseResult2.builder().msg(e.getMsg()).code(e.getCode()).build();
+        return ResponseResult.builder().msg(e.getMsg()).code(e.getCode()).build();
     }
 
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     @ResponseBody
-    public ResponseResult2 requestExceptionHandler(DataIntegrityViolationException e){
+    public ResponseResult requestExceptionHandler(DataIntegrityViolationException e) {
         e.printStackTrace();
-        return ResponseResult2.builder().msg("数据操作格式异常").code(ResponseCode.OTHER_ERROR.code).build();
+        return ResponseResult.builder().msg("数据操作格式异常").code(ResponseCode.OTHER_ERROR.code).build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseResult2 methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e){
+    public ResponseResult methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         e.printStackTrace();
         BindingResult result = e.getBindingResult();
         String s = "参数验证失败";
@@ -47,14 +47,14 @@ public class GlobalDefaultExceptionHandler {
             List<ObjectError> errors = result.getAllErrors();
             s = errors.get(0).getDefaultMessage();
         }
-        return ResponseResult2.builder().code(ResponseCode.OTHER_ERROR.code).msg(s).build();
+        return ResponseResult.builder().code(ResponseCode.OTHER_ERROR.code).msg(s).build();
     }
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ResponseResult2 requestExceptionHandler(Exception e){
+    public ResponseResult requestExceptionHandler(Exception e) {
         e.printStackTrace();
-        return ResponseResult2.builder().msg("服务器飘了，管理员去拿刀修理了~").code(ResponseCode.OTHER_ERROR.code).build();
+        return ResponseResult.builder().msg("服务器飘了，管理员去拿刀修理了~").code(ResponseCode.OTHER_ERROR.code).build();
     }
 
 
