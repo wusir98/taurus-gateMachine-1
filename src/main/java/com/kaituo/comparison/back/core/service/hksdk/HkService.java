@@ -28,14 +28,11 @@ public class HkService {
     @Value("${hk.appSecret}")
     String appSecret;
 
-    @Autowired
-    RestTemplate restTemplate;
-
     public <T> ResponseResult2<T> getResponse(String uri, JSON param,Class<T> responseType){
         return new ResponseResult2<T>();
     }
 
-    public  String getResponse(String uri, String param){
+    public  String getResponse(String uri, Object param){
         /**
          * STEP1：设置平台参数，根据实际情况,设置host appkey appsecret 三个参数.
          */
@@ -66,11 +63,15 @@ public class HkService {
         /**
          * STEP5：组装请求参数
          */
-        String body = param;
+        String body = JSONObject.toJSONString(param);
+
+
         /**
          * STEP6：调用接口
          */
         String result = ArtemisHttpUtil.doPostStringArtemis(path, body, null, null, contentType , null);
+
+
         return result;
     }
 
