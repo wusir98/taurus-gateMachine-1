@@ -13,4 +13,6 @@ public interface HkService {
     String getResponse(String uri, Object param);
     boolean isAllow(String uri,String token);
     void updateToken(RestToken restToken);
+
+    void startHkAync();
 }

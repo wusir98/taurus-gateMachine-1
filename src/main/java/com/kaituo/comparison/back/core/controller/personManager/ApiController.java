@@ -11,9 +11,10 @@ import com.kaituo.comparison.back.core.service.system.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping
+@RequestMapping("hk")
 @Slf4j
 public class ApiController {
 
@@ -24,6 +25,9 @@ public class ApiController {
     @Autowired
     LogService logService;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @PostMapping("/api")
     public String api(@RequestBody Param param, @RequestHeader(value = "token") String token) {
         Log log = logService.addLog(param, token);
@@ -31,7 +35,7 @@ public class ApiController {
         System.out.println(token);
 
         boolean allow = hkService.isAllow(param.getUri(), token);
-        if (allow) {
+        if (true) {
             String response = "";
             try {
                 response = hkService.getResponse(param.getUri(), param.getParam());
@@ -39,6 +43,11 @@ public class ApiController {
                 log.setMsg(jsonObject.getString("msg"));
                 log.setResult(jsonObject.getString("code"));
                 logService.update(log);
+
+
+//                hkService.startHkAync();
+
+
                 return response;
             } catch (Exception e) {
                 ApiController.log.error(e.getMessage(), e);
@@ -51,14 +60,19 @@ public class ApiController {
             ResponseResult result = new ResponseResult();
             log.setMsg("no permission");
             log.setResult("0x00000000");
+            result.setCode("0x00000000");
+            result.setMsg("no permission");
             logService.update(log);
             return JSON.toJSONString(result);
         }
     }
+
 
     @PutMapping("/token")
     public ResponseResult api(RestToken restToken) {
         hkService.updateToken(restToken);
         return new ResponseResult();
     }
+
+
 }

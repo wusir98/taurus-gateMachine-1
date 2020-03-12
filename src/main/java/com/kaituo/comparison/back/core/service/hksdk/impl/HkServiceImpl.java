@@ -14,7 +14,9 @@ import com.kaituo.comparison.back.core.mapper.system.OrganizationMapper;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,11 @@ public class HkServiceImpl implements HkService {
     OrganizationInterfaceMapper organizationInterfaceMapper;
     @Autowired
     OrganizationMapper organizationMapper;
-    public  String getResponse(String uri, Object param){
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    public String getResponse(String uri, Object param) {
         /**
          * STEP1：设置平台参数，根据实际情况,设置host appkey appsecret 三个参数.
          */
@@ -70,31 +76,37 @@ public class HkServiceImpl implements HkService {
         /**
          * STEP6：调用接口
          */
-        String result = ArtemisHttpUtil.doPostStringArtemis(path, body, null, null, contentType , null);
+        String result = ArtemisHttpUtil.doPostStringArtemis(path, body, null, null, contentType, null);
 
 
         return result;
     }
 
+    @Async
+    public void startHkAync() {
+
+
+    }
+
     @Override
-    public boolean isAllow(String uri,String token) {
+    public boolean isAllow(String uri, String token) {
         Organization organization = organizationMapper.selectOne(new QueryWrapper<Organization>().eq("token", token));
         int id = organization.getOrganizationId();
         int i = organizationInterfaceMapper.selectCount(new QueryWrapper<OrganizationInterface>()
                 .eq("organization_Id", id)
                 .eq("interface", uri));
-        if(i>0){
+        if (i > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
     @Override
     public void updateToken(RestToken restToken) {
-        Organization organization=new Organization();
+        Organization organization = new Organization();
         organization.setToken(restToken.getNewToken());
 
-        organizationMapper.update(organization,new UpdateWrapper<Organization>().eq("token",restToken.getOldToken()));
+        organizationMapper.update(organization, new UpdateWrapper<Organization>().eq("token", restToken.getOldToken()));
     }
 }
