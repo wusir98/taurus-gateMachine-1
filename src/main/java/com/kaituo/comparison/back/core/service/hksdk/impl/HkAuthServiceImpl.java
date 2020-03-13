@@ -67,7 +67,7 @@ public class HkAuthServiceImpl implements HkAuthService {
 
         CardsBind cardsBind = new CardsBind();
         cardsBind.setStartDate("2018-10-30");
-        cardsBind.setEndDate("2028-10-30");
+        cardsBind.setEndDate("2088-10-30");
         cardsBind.setCardList(cardInfos);
 
 
@@ -79,7 +79,7 @@ public class HkAuthServiceImpl implements HkAuthService {
             responseCardsBind = hkService.getResponse(CommonConstant.HK_CARD_BINDS, cardsBind);
             log.info("批量开卡" + responseCardsBind);
 
-            authCommit(resultRegister);
+            authAddCommit(resultRegister);
 
             List<String> resourceIndexCodeList = doTask();
 
@@ -111,36 +111,13 @@ public class HkAuthServiceImpl implements HkAuthService {
                     }
             );
         }
-
-
-        //权限删除
-
-        AuthDelete authDelete = new AuthDelete();
-        List<PersonDatas> personDatasList = new ArrayList<>();
-        List<String> personDeleteIndexs = new ArrayList<>();
-        PersonDatas personDeleteDatas = new PersonDatas();
-        resultRegister.getCommand().forEach(v -> {
-            personDeleteIndexs.add(v.getId());
-        });
-        personDeleteDatas.setIndexCodes(personDeleteIndexs);
-        personDatasList.add(personDeleteDatas);
-        authDelete.setPersonDatas(personDatasList);
-
-        String response = hkService.getResponse(CommonConstant.HK_AUTH_DELETE, authDelete);
-        log.info("权限删除返回值" + response);
-
-
+        authDelCommit(resultRegister);
         doTask();
-
-
-        authCommit(resultRegister);
-
+        authAddCommit(resultRegister);
         List<String> resourceIndexCodeList = doTask();
-
         commitResult(resultRegister, resourceIndexCodeList);
-
-
     }
+
 
     @Override
     public void deleteAuth(ResultRegister resultRegister, ResultResource resultResource) {
@@ -156,28 +133,17 @@ public class HkAuthServiceImpl implements HkAuthService {
                             if (v.getAreaid().equals(v1.getAreaid()) && v.getUnitno().equals(v1.getUnitno())) {
                                 list1.add(v1.getDeviceid());
                             }
-
                         });
                         v.setResourceIndexCodes(list1);
                         personIds.add(v.getId());
-
                     }
             );
         }
-
         deletePeoples.put("personIds", personIds);
-
         String respDeletePeople = hkService.getResponse(CommonConstant.HK_BATCH_DELETE_PEOPLE, deletePeoples);
-
         log.info("批量删除人员返回值:" + respDeletePeople);
-
-
         List<String> resourceIndexCodeList = doTask();
-
-
         commitResult(resultRegister, resourceIndexCodeList);
-
-
     }
 
 
@@ -269,12 +235,11 @@ public class HkAuthServiceImpl implements HkAuthService {
      *
      * @param resultRegister
      */
-    private void authCommit(ResultRegister resultRegister) {
+    private void authAddCommit(ResultRegister resultRegister) {
         //权限下发do
         AuthAdd authAdd = new AuthAdd();
         authAdd.setStartTime("2018-09-03T17:30:08.000+08:00");
-        authAdd.setEndTime("2028-09-06T17:30:08.000+08:00");
-
+        authAdd.setEndTime("2088-09-06T17:30:08.000+08:00");
         resultRegister.getCommand().forEach(v -> {
             List<PersonDatas> personAuthList = new ArrayList<>();
             PersonDatas personDatas = new PersonDatas();
@@ -282,7 +247,6 @@ public class HkAuthServiceImpl implements HkAuthService {
             personIndexs.add(v.getId());
             personDatas.setIndexCodes(personIndexs);
             personAuthList.add(personDatas);
-
             authAdd.setPersonDatas(personAuthList);
             authAdd.setResourceInfos(v.getResourceInfos());
             log.info("权限下发入参：" + JSON.toJSONString(authAdd).toString());
@@ -290,9 +254,27 @@ public class HkAuthServiceImpl implements HkAuthService {
             String response = hkService.getResponse(CommonConstant.HK_AUTH_ADD, authAdd);
             log.info("权限下发返回值" + response);
         });
-
-
     }
 
+
+    /**
+     * 权限删除提交
+     *
+     * @param resultRegister
+     */
+    private void authDelCommit(ResultRegister resultRegister) {
+        AuthDelete authDelete = new AuthDelete();
+        List<PersonDatas> personDatasList = new ArrayList<>();
+        List<String> personDeleteIndexs = new ArrayList<>();
+        PersonDatas personDeleteDatas = new PersonDatas();
+        resultRegister.getCommand().forEach(v -> {
+            personDeleteIndexs.add(v.getId());
+        });
+        personDeleteDatas.setIndexCodes(personDeleteIndexs);
+        personDatasList.add(personDeleteDatas);
+        authDelete.setPersonDatas(personDatasList);
+        String response = hkService.getResponse(CommonConstant.HK_AUTH_DELETE, authDelete);
+        log.info("权限删除返回值" + response);
+    }
 
 }
