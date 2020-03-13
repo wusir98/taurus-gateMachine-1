@@ -21,7 +21,7 @@ public class MybatisPlusConfig {
      * 文档：http://mp.baomidou.com<br>
      */
     @Bean
-    @Profile({"dev", "test"})
+    @Profile({"dev"})
     public PerformanceInterceptor performanceInterceptor() {
         return new PerformanceInterceptor();
     }

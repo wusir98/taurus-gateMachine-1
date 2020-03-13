@@ -23,16 +23,22 @@ import java.util.Map;
 
 @Service
 public class HkServiceImpl implements HkService {
+
     @Value("${hk.host}")
     String host;
+
     @Value("${hk.appKey}")
     String appKey;
+
     @Value("${hk.appSecret}")
     String appSecret;
+
     @Autowired
     LogMapper logMapper;
+
     @Autowired
     OrganizationInterfaceMapper organizationInterfaceMapper;
+
     @Autowired
     OrganizationMapper organizationMapper;
 

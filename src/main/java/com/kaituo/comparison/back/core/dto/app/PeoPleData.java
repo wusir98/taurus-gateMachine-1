@@ -41,4 +41,8 @@ public class PeoPleData {
     private String createddate;
     private String lastmodifieddate;
     List<ResourceInfo> resourceInfos;
+    /**
+     * 人员绑定的设备resourceIndex集合
+     */
+    List<String> resourceIndexCodes;
 }
