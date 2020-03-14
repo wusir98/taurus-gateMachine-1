@@ -53,3 +53,8 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+
+hk:
+  host: 192.168.110.202:443
+  appKey: 29584542
+  appSecret: QiLH9PsxKqHd2jTT9y9d

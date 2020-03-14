@@ -11,7 +11,6 @@ import com.kaituo.comparison.back.core.service.system.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("hk")
@@ -24,9 +23,6 @@ public class ApiController {
 
     @Autowired
     LogService logService;
-
-    @Autowired
-    RestTemplate restTemplate;
 
     @PostMapping("/api")
     public String api(@RequestBody Param param, @RequestHeader(value = "token") String token) {

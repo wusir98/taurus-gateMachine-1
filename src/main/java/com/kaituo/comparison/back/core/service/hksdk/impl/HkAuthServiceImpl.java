@@ -9,6 +9,9 @@ import com.kaituo.comparison.back.core.service.hksdk.HkAuthService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +27,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class HkAuthServiceImpl implements HkAuthService {
+
 
     @Autowired
     HkService hkService;
@@ -65,9 +69,11 @@ public class HkAuthServiceImpl implements HkAuthService {
         }
 
 
+        log.info(resultRegister.toString() + "=================入参");
+
         CardsBind cardsBind = new CardsBind();
         cardsBind.setStartDate("2018-10-30");
-        cardsBind.setEndDate("2088-10-30");
+        cardsBind.setEndDate("2028-10-30");
         cardsBind.setCardList(cardInfos);
 
 
@@ -82,6 +88,8 @@ public class HkAuthServiceImpl implements HkAuthService {
             authAddCommit(resultRegister);
 
             List<String> resourceIndexCodeList = doTask();
+
+            resourceIndexCodeList.forEach(v -> log.info(v + "======="));
 
             commitResult(resultRegister, resourceIndexCodeList);
         }
@@ -180,11 +188,11 @@ public class HkAuthServiceImpl implements HkAuthService {
         //查看下载任务进度
         Map<String, String> task = new HashMap();
         task.put("taskId", taskId);
-        String taskProgress = hkService.getResponse(CommonConstant.HK_TASK_PROGRESS, taskId);
+        String taskProgress = hkService.getResponse(CommonConstant.HK_TASK_PROGRESS, task);
 
         log.info("查看下载任务进度返回：" + taskProgress);
 
-        TaskProgress progress = JSONObject.parseObject(taskProgress, TaskProgress.class);
+        TaskProgress progress = JSONObject.parseObject(taskProgress, TaskProgressReturn.class).getData();
 
 
         //成功下发设备的list
@@ -195,7 +203,7 @@ public class HkAuthServiceImpl implements HkAuthService {
             List<ResourceDownloadProgress> resourceDownloadProgress = progress.getResourceDownloadProgress();
             if (!CollectionUtils.isEmpty(resourceDownloadProgress)) {
                 resourceDownloadProgress.forEach(v -> {
-                            if (CommonConstant.SUCCESS_CODE.equals(v.getErrorCode())) {
+                    if (CommonConstant.SUCCESS_CODE.equals(v.getErrorCode()) || Objects.isNull(v.getErrorCode())) {
                                 resourceIndexCodeList.add(v.getResourceInfo().getResourceIndexCode());
                             }
                         }
@@ -215,13 +223,18 @@ public class HkAuthServiceImpl implements HkAuthService {
     private void commitResult(ResultRegister resultRegister, List<String> resourceIndexCodeList) {
 
         if (!Objects.isNull(resultRegister) && !CollectionUtils.isEmpty(resourceIndexCodeList)) {
+
+            log.info("提交给app端开始=================");
             resultRegister.getCommand().forEach(v -> {
                 if (resourceIndexCodeList.containsAll(v.getResourceIndexCodes())) {
                     ResultCommit resultCommit = new ResultCommit();
                     resultCommit.setId(v.getId());
                     resultCommit.setSynctag("2");
 //                        resultCommit.setSyncmsg("授权成功");
-                    ResultBase resultBase = restTemplate.postForObject("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessSync.json", resultCommit, ResultBase.class);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
+                    ResultBase resultBase = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessSync.json", HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
                     log.info("门禁校验结果提交" + resultBase.toString());
                 }
 
@@ -239,7 +252,7 @@ public class HkAuthServiceImpl implements HkAuthService {
         //权限下发do
         AuthAdd authAdd = new AuthAdd();
         authAdd.setStartTime("2018-09-03T17:30:08.000+08:00");
-        authAdd.setEndTime("2088-09-06T17:30:08.000+08:00");
+        authAdd.setEndTime("2028-09-06T17:30:08.000+08:00");
         resultRegister.getCommand().forEach(v -> {
             List<PersonDatas> personAuthList = new ArrayList<>();
             PersonDatas personDatas = new PersonDatas();

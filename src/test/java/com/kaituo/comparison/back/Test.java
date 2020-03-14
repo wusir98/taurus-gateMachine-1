@@ -3,14 +3,15 @@ package com.kaituo.comparison.back;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kaituo.comparison.back.core.constant.CommonConstant;
-import com.kaituo.comparison.back.core.dto.app.PeoPleData;
-import com.kaituo.comparison.back.core.dto.app.ResultRegister;
-import com.kaituo.comparison.back.core.dto.app.ResultResource;
+import com.kaituo.comparison.back.core.dto.app.*;
 import com.kaituo.comparison.back.core.dto.hksdk.*;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,10 +36,27 @@ public class Test {
 
     @org.junit.Test
     public void list() {
-        ResultRegister resultRegister = restTemplate.getForObject("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
+//        ResponseEntity<ResultRegister> exchange = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=3", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class);
+//        ResultResource body = restTemplate.exchange("http://sq.wxsmart.xyz/qzf//front/anon/doorDeviceList.json", HttpMethod.POST, new HttpEntity<String>(headers), ResultResource.class).getBody();
 
-        resultRegister.getCommand().forEach(v -> System.out.println(v.toString()));
+//        body.getCommand().forEach(v -> System.out.println(v.toString()));
 
+//        ResultRegister resultRegister = restTemplate.getForObject("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
+//
+//        resultRegister.getCommand().forEach(v -> System.out.println(v.toString()));
+
+
+        ResultCommit resultCommit = new ResultCommit();
+        resultCommit.setId("11584090153204");
+        resultCommit.setSynctag("1");
+//                        resultCommit.setSyncmsg("授权成功");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
+        ResultBase resultBase = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessSync.json", HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
+        System.out.println(resultBase.getStatus());
     }
 
 
@@ -134,4 +152,6 @@ public class Test {
         String response = hkService.getResponse(CommonConstant.HK_TASK_START, taskStartMap);
         System.out.println(response);
     }
+
+
 }
