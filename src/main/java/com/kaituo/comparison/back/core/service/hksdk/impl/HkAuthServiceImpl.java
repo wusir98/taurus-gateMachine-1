@@ -9,6 +9,7 @@ import com.kaituo.comparison.back.core.service.hksdk.HkAuthService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,8 +36,18 @@ public class HkAuthServiceImpl implements HkAuthService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Value("${xh.commitResult}")
+    String commitResult;
+
+    @Value("${xh.token}")
+    String token;
+
     @Override
     public void addAuth(ResultRegister resultRegister, ResultResource resultResource) {
+
+        String dv1 = "1e188c91b80040ef956132a0eaa47ade";
+
+        String dv2 = "bb4f3eec37af4007bc303c12895e6870";
 
         List<CardInfo> cardInfos = new ArrayList<>();
 
@@ -52,15 +63,28 @@ public class HkAuthServiceImpl implements HkAuthService {
                         List<ResourceInfo> list = new ArrayList<>();
                         //用于判断最后是否下发成功list
                         List<String> list1 = new ArrayList<>();
-                        resultResource.getCommand().forEach(v1 -> {
-                            if (v.getAreaid().equals(v1.getAreaid()) && v.getUnitno().equals(v1.getUnitno())) {
-                                ResourceInfo resourceInfo = new ResourceInfo();
-                                resourceInfo.setResourceIndexCode(v1.getDeviceid());
-                                list.add(resourceInfo);
-                                list1.add(v1.getDeviceid());
-                            }
+                        //TODO 等到有关联楼栋的设备再开放
+//                        resultResource.getCommand().forEach(v1 -> {
+//                            if (v.getAreaid().equals(v1.getAreaid()) && v.getUnitno().equals(v1.getUnitno())) {
+//                                ResourceInfo resourceInfo = new ResourceInfo();
+//                                resourceInfo.setResourceIndexCode(v1.getDeviceid());
+//                                list.add(resourceInfo);
+//                                list1.add(v1.getDeviceid());
+//                            }
+//
+//                        });
 
-                        });
+
+                        list1.add(dv1);
+                        list1.add(dv2);
+
+                        ResourceInfo resourceInfo = new ResourceInfo();
+                        resourceInfo.setResourceIndexCode(dv1);
+                        ResourceInfo resourceInfo2 = new ResourceInfo();
+                        resourceInfo2.setResourceIndexCode(dv2);
+                        list.add(resourceInfo);
+                        list.add(resourceInfo2);
+
                         v.setResourceInfos(list);
                         v.setResourceIndexCodes(list1);
 
@@ -233,8 +257,8 @@ public class HkAuthServiceImpl implements HkAuthService {
 //                        resultCommit.setSyncmsg("授权成功");
 
                     HttpHeaders headers = new HttpHeaders();
-                    headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
-                    ResultBase resultBase = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessSync.json", HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
+                    headers.add("token", token);
+                    ResultBase resultBase = restTemplate.exchange(commitResult, HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
                     log.info("门禁校验结果提交" + resultBase.toString());
                 }
 

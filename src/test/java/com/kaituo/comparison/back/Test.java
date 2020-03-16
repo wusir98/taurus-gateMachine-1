@@ -38,12 +38,12 @@ public class Test {
     public void list() {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
-//        ResponseEntity<ResultRegister> exchange = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=3", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class);
-//        ResultResource body = restTemplate.exchange("http://sq.wxsmart.xyz/qzf//front/anon/doorDeviceList.json", HttpMethod.POST, new HttpEntity<String>(headers), ResultResource.class).getBody();
+//        ResponseEntity<ResultRegister> exchange = restTemplate.exchange("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=3", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class);
+//        ResultResource body = restTemplate.exchange("http://192.168.110.132:8080/qzf//front/anon/doorDeviceList.json", HttpMethod.POST, new HttpEntity<String>(headers), ResultResource.class).getBody();
 
 //        body.getCommand().forEach(v -> System.out.println(v.toString()));
 
-//        ResultRegister resultRegister = restTemplate.getForObject("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
+//        ResultRegister resultRegister = restTemplate.getForObject("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
 //
 //        resultRegister.getCommand().forEach(v -> System.out.println(v.toString()));
 
@@ -55,7 +55,7 @@ public class Test {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
-        ResultBase resultBase = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessSync.json", HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
+        ResultBase resultBase = restTemplate.exchange("http://192.168.110.132:8080/qzf/front/anon/doorAccessSync.json", HttpMethod.POST, new HttpEntity<>(resultCommit, headers), ResultBase.class).getBody();
         System.out.println(resultBase.getStatus());
     }
 

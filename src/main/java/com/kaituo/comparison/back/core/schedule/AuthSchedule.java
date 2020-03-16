@@ -6,6 +6,7 @@ import com.kaituo.comparison.back.core.service.hksdk.HkAuthService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,21 +39,35 @@ public class AuthSchedule {
     HkAuthService hkAuthService;
 
 
+    @Value("${xh.token}")
+    String token;
+    @Value("${xh.commitResult}")
+    String commitResult;
+    @Value("${xh.doorDeviceList}")
+    String doorDeviceList;
+    @Value("${xh.doorAccessListAdd}")
+    String doorAccessListAdd;
+    @Value("${xh.doorAccessListModify}")
+    String doorAccessListModify;
+    @Value("${xh.doorAccessListDelete}")
+    String doorAccessListDelete;
+
+
     @Scheduled(cron = "0/3 * * * * ?")
     public void schedulePeople() {
-//        ResultRegister resultRegister = restTemplate.getForObject("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
+//        ResultRegister resultRegister = restTemplate.getForObject("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("token", "c26aaf2a5bd4a3c495cbf1a1290a0b57");
+        headers.add("token", token);
 
         //已下发人员
-        ResultRegister resultRegister = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=1", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
+        ResultRegister resultRegister = restTemplate.exchange(doorAccessListAdd, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
         //修改人员
-        ResultRegister resultModify = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=4", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
+        ResultRegister resultModify = restTemplate.exchange(doorAccessListModify, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
         //删除人员
-        ResultRegister resultDelete = restTemplate.exchange("http://sq.wxsmart.xyz/qzf/front/anon/doorAccessList.json?synctag=5", HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
+        ResultRegister resultDelete = restTemplate.exchange(doorAccessListDelete, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
         //楼栋和设备关系表
-        ResultResource resultResource = restTemplate.exchange("http://sq.wxsmart.xyz/qzf//front/anon/doorDeviceList.json", HttpMethod.POST, new HttpEntity<String>(headers), ResultResource.class).getBody();
+        ResultResource resultResource = restTemplate.exchange(doorDeviceList, HttpMethod.POST, new HttpEntity<String>(headers), ResultResource.class).getBody();
 
 
         if (!CollectionUtils.isEmpty(resultRegister.getCommand())) {

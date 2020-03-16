@@ -7,10 +7,7 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
     min-response-size: 1024
   port: 1001
-hk:
-  host: 192.168.110.202:443
-  appKey: 29584542
-  appSecret: QiLH9PsxKqHd2jTT9y9d
+
 spring:
   datasource:
     url: jdbc:oracle:thin:@192.168.110.201:1521:icprod
@@ -56,3 +53,16 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+
+hk:
+  host: 192.168.110.202:443
+  appKey: 29584542
+  appSecret: QiLH9PsxKqHd2jTT9y9d
+
+xh:
+  token: c26aaf2a5bd4a3c495cbf1a1290a0b57
+  commitResult: http://192.168.110.132:8080/zhsq/front/anon/doorAccessSync.json
+  doorDeviceList: http://192.168.110.132:8080/zhsq/front/anon/doorDeviceList.json
+  doorAccessListAdd: http://192.168.110.132:8080/zhsq/front/anon/doorAccessList.json?synctag=1
+  doorAccessListModify: http://192.168.110.132:8080/zhsq/front/anon/doorAccessList.json?synctag=4
+  doorAccessListDelete: http://192.168.110.132:8080/zhsq/front/anon/doorAccessList.json?synctag=5
