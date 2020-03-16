@@ -53,7 +53,7 @@ public class AuthSchedule {
     String doorAccessListDelete;
 
 
-    @Scheduled(cron = "0/3 * * * * ?")
+    //@Scheduled(cron = "0/3 * * * * ?")
     public void schedulePeople() {
 //        ResultRegister resultRegister = restTemplate.getForObject("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
 
