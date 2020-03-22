@@ -56,7 +56,7 @@ public class EventSchedule {
         return sdf2.format(date)+"T"+sdf3.format(date)+"+08:00";
     }
 
-    //@Scheduled(fixedDelay= 1*1000*60)
+    @Scheduled(fixedDelay= 1*1000*60)
     public void schedulePeople() {
         log.info("开始任务");
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

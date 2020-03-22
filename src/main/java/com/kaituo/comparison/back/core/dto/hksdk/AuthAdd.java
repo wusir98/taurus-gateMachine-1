@@ -3,6 +3,7 @@ package com.kaituo.comparison.back.core.dto.hksdk;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description:
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 public class AuthAdd {
     List<PersonDatas> personDatas;
-    List<ResourceInfo> resourceInfos;
+    Set<ResourceInfo> resourceInfos;
     String startTime;
     String endTime;
 }

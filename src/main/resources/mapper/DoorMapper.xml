@@ -9,4 +9,15 @@
             connect by prior parent_id=id
     </select>
 
+    <select id="getAuthDoor" resultType="com.kaituo.comparison.back.core.entity.event.Door">
+       select * from t_door t1 where exists ( select * from t_door t2
+       where t1.parent_id=t2.id and t2.areaId= #{areaId}
+      <if test='unitNo!="0"'>
+       and t2.unitNo =#{unitNo}
+      </if >
+      )
+
+    </select>
+
+
 </mapper>

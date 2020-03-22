@@ -2,7 +2,6 @@
 <configuration debug="false" scan="true" scanPeriod="1 seconds">
 
     <contextName>logback</contextName>
-
     <property name="log.path" value="/opt/data/applogs/taurus-gateMachine/"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -62,5 +61,8 @@
         <appender-ref ref="FILE_ERROR"/>
     </root>
 
-
+    <logger name="com.hikvision.artemis.sdk.ArtemisHttpUtil" level="ERROR" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="FILE_INFO"/>
+        <appender-ref ref="FILE_ERROR"/></logger>
 </configuration>

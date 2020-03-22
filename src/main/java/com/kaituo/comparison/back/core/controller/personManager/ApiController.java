@@ -6,6 +6,7 @@ import com.kaituo.comparison.back.common.bean.ResponseResult;
 import com.kaituo.comparison.back.core.dto.hksdk.Param;
 import com.kaituo.comparison.back.core.dto.hksdk.RestToken;
 import com.kaituo.comparison.back.core.entity.system.Log;
+import com.kaituo.comparison.back.core.service.hksdk.HkAuthService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import com.kaituo.comparison.back.core.service.system.LogService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +24,12 @@ public class ApiController {
 
     @Autowired
     LogService logService;
+    @Autowired
+    HkAuthService hkAuthService;
 
     @PostMapping("/api")
     public String api(@RequestBody Param param, @RequestHeader(value = "token") String token) {
         Log log = logService.addLog(param, token);
-        System.out.println(param.getParam());
-        System.out.println(token);
 
         boolean allow = hkService.isAllow(param.getUri(), token);
         if (true) {
@@ -70,5 +71,11 @@ public class ApiController {
         return new ResponseResult();
     }
 
+    @GetMapping("/previewAuth")
+    public ResponseResult previewAuth(String personId,String areaid,String unitno) {
+        log.info("previewAuth?personId="+personId+"&areaid="+areaid+"&unitno="+unitno);
+        hkAuthService.tempAuth(personId,areaid,unitno);
+        return new ResponseResult();
+    }
 
 }

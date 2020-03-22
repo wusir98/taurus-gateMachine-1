@@ -24,9 +24,7 @@ public class LogServiceImpl implements LogService {
         log.setUri(param.getUri());
         Organization organization = organizationMapper.selectOne(
                 new QueryWrapper<Organization>().eq("token", token));
-        System.out.println(organization);
         log.setOrganizationId(organization.getOrganizationId());
-        System.out.println(log);
         logMapper.insert(log);
         return log;
     }

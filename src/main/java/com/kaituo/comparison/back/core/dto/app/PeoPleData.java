@@ -40,6 +40,8 @@ public class PeoPleData {
     private String syncmsg;
     private String createddate;
     private String lastmodifieddate;
+    private String permission;
+    private String carinfo;
     List<ResourceInfo> resourceInfos;
     /**
      * 人员绑定的设备resourceIndex集合

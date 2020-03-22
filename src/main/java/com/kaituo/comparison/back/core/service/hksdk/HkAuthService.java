@@ -1,7 +1,10 @@
 package com.kaituo.comparison.back.core.service.hksdk;
 
+import com.kaituo.comparison.back.core.dto.app.PeoPleData;
 import com.kaituo.comparison.back.core.dto.app.ResultRegister;
 import com.kaituo.comparison.back.core.dto.app.ResultResource;
+
+import java.util.List;
 
 /**
  * @Description:
@@ -11,9 +14,10 @@ import com.kaituo.comparison.back.core.dto.app.ResultResource;
  */
 
 public interface HkAuthService {
-    void addAuth(ResultRegister resultRegister, ResultResource resultResource);
 
-    void modifyAuth(ResultRegister resultRegister, ResultResource resultResource);
+    void addAuth(ResultRegister resultRegister);
 
-    void deleteAuth(ResultRegister resultRegister, ResultResource resultResource);
+    void qr(List<PeoPleData> listPeoPleData);
+    void tempAuth(String personId,String areaid,String unitno);
+    String startTask();
 }

@@ -46,6 +46,8 @@ public class CommonConstant {
     public static final String HK_PICTURE = "/api/resource/v1/person/picture";
     //人员卡片--批量开卡
     public static final String HK_CARD_BINDS = "/api/cis/v1/card/bindings";
+    //人员卡片--批量开卡
+    public static final String HK_CARD_INFO= "/api/irds/v1/card/cardInfo";
     //一卡通权限管理--下发权限
     public static final String HK_AUTH_ADD = "/api/acps/v1/auth_config/add";
     //一卡通权限管理--创建下载任务
@@ -54,6 +56,8 @@ public class CommonConstant {
     public static final String HK_TASK_START = "/api/acps/v1/authDownload/task/start";
     //一卡通权限管理--查询下载任务进度
     public static final String HK_TASK_PROGRESS = "/api/acps/v1/authDownload/task/progress";
+    //一卡通权限管理--查询单个权限条目
+    public static final String HK_AUTH_QUERY= "/api/acps/v1/auth_item/single/search";
     //卡片退卡
     public static final String HK_CARD_DELETION = "/api/cis/v1/card/deletion";
     //删除权限
