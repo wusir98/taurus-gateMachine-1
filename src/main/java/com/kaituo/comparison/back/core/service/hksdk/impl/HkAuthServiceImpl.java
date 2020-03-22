@@ -291,16 +291,22 @@ public class HkAuthServiceImpl implements HkAuthService {
         String permission = peoPleData.getPermission();
         String carUnit=existCar(peoPleData);
         Set<ResourceInfo> resourceInfos=new HashSet<>(1);
-
-        JSONArray ja=JSONArray.parseArray(permission);
-        for(int i=0;i<ja.size();i++){
-            JSONObject jsonObject = ja.getJSONObject(i);
-            String areaid = jsonObject.getString("areaid");
-            String unitno = jsonObject.getString("unitno");
-            List<Door> listAuthDoor = doorMapper.getAuthDoor(areaid, unitno);
-            List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, carUnit);
-            listAuthDoor.addAll(listAuthDoor2);
-            addResource(listAuthDoor,resourceInfos);
+        try {
+            JSONArray ja=JSONArray.parseArray(permission);
+            if(ja==null){
+                return resourceInfos;
+            }
+            for(int i=0;i<ja.size();i++){
+                JSONObject jsonObject = ja.getJSONObject(i);
+                String areaid = jsonObject.getString("areaid");
+                String unitno = jsonObject.getString("unitno");
+                List<Door> listAuthDoor = doorMapper.getAuthDoor(areaid, unitno);
+                List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, carUnit);
+                listAuthDoor.addAll(listAuthDoor2);
+                addResource(listAuthDoor,resourceInfos);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
         return resourceInfos;
     }
@@ -310,17 +316,21 @@ public class HkAuthServiceImpl implements HkAuthService {
         String permission = peoPleData.getPermission();
         String carUnit=existCar(peoPleData);
         Set<ResourceInfo> resourceInfos=new HashSet<>(1);
-
-        JSONArray ja=JSONArray.parseArray(permission);
-        for(int i=0;i<ja.size();i++){
-            JSONObject jsonObject = ja.getJSONObject(i);
-            String areaid = jsonObject.getString("areaid");
-            String unitno = jsonObject.getString("unitno");
-            List<Door> listAuthDoor = doorMapper.getAuthDoor(areaid, unitno);
-            List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, carUnit);
-            listAuthDoor.addAll(listAuthDoor2);
-            addResource2(listAuthDoor,resourceInfos);
+        try {
+            JSONArray ja=JSONArray.parseArray(permission);
+            for(int i=0;i<ja.size();i++){
+                JSONObject jsonObject = ja.getJSONObject(i);
+                String areaid = jsonObject.getString("areaid");
+                String unitno = jsonObject.getString("unitno");
+                List<Door> listAuthDoor = doorMapper.getAuthDoor(areaid, unitno);
+                List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, carUnit);
+                listAuthDoor.addAll(listAuthDoor2);
+                addResource2(listAuthDoor,resourceInfos);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
+
         return resourceInfos;
     }
     /**
