@@ -70,6 +70,7 @@ public class HkAuthServiceImpl implements HkAuthService {
                 personDatas.setIndexCodes(personDeleteIndexs);
                 personDatasList.add(personDatas);
                 authDelete.setPersonDatas(personDatasList);
+                log.info("权限删除入参:" + authDelete);
                 String response = hkService.getResponse(CommonConstant.HK_AUTH_DELETE, authDelete);
                 log.info("权限删除返回值" + response);
                 //3.权限下发信息
@@ -89,10 +90,16 @@ public class HkAuthServiceImpl implements HkAuthService {
                 AuthSingleQueryDTO authSingleQueryDTO=new AuthSingleQueryDTO();
                 authSingleQueryDTO.setPersonId(peoPleData.getCardid());
                 authSingleQueryDTO.setResourceInfo(resourceInfo);
+                log.info("权限删除入参" + authSingleQueryDTO);
                 String respDeletePeople = hkService.getResponse(CommonConstant.HK_AUTH_QUERY, authSingleQueryDTO);
+                log.info("权限删除返回值" + respDeletePeople);
                 JSONObject jsonObject = JSONObject.parseObject(respDeletePeople);
                 JSONObject data = jsonObject.getJSONObject("data");
-                int personStatus = data.getInteger("personStatus");
+                int personStatus=0;
+                try {
+                    personStatus = data.getInteger("personStatus");
+                }catch (Exception e){
+                }
                 if(personStatus!=3){
                     flag=false;
                     break A;
@@ -103,7 +110,7 @@ public class HkAuthServiceImpl implements HkAuthService {
                 log.info("下发指令成功:personId=" +peoPleData.getId());
             }else {
                 commitResult(peoPleData.getId(),"3");
-                log.info("下发指令失败:personId=" +peoPleData.getId());
+                log.info("zg下发指令失败:personId=" +peoPleData.getId());
             }
         });
     }
@@ -112,7 +119,7 @@ public class HkAuthServiceImpl implements HkAuthService {
     public void tempAuth(String personId, String areaid, String unitno) {
         addCard(personId);
         List<Door> listAuthDoor = doorMapper.getAuthDoor(areaid, unitno);
-        List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, "public2");
+        List<Door> listAuthDoor2 = doorMapper.getAuthDoor(areaid, "public1");
         listAuthDoor.addAll(listAuthDoor2);
         Set<ResourceInfo> resourceInfos=new HashSet<>(1);
         addResource(listAuthDoor,resourceInfos);
@@ -136,7 +143,7 @@ public class HkAuthServiceImpl implements HkAuthService {
         //添加权限配置
         String response = hkService.getResponse(CommonConstant.HK_AUTH_ADD, authAdd);
         log.info("权限下发返回值" + response);
-        startTask();
+        //startTask();
 
     }
 
@@ -153,6 +160,7 @@ public class HkAuthServiceImpl implements HkAuthService {
             cardsBind.setStartDate("2018-10-30");
             cardsBind.setEndDate("2035-10-30");
             cardsBind.setCardList(cardInfos);
+            log.info("批量开卡入参:" + cardsBind);
             String responseCardsBind = hkService.getResponse(CommonConstant.HK_CARD_BINDS, cardsBind);
             log.info("批量开卡" + responseCardsBind);
         }
@@ -178,8 +186,13 @@ public class HkAuthServiceImpl implements HkAuthService {
         Map<String, String> taskStartMap = new HashMap();
         taskStartMap.put("taskId", taskId);
         String response = hkService.getResponse(CommonConstant.HK_TASK_START, taskStartMap);
+        log.info("开始下载任务返回 " +taskId+" : "+ response);
+        if(!response.contains("success")){
+            response = hkService.getResponse(CommonConstant.HK_TASK_DELETE, taskStartMap);
+            log.info("删除任务 " +taskId+" : "+ response);
+        }
 
-        log.info("开始下载任务返回：" + response);
+
         return taskId;
     }
 
@@ -318,6 +331,9 @@ public class HkAuthServiceImpl implements HkAuthService {
         Set<ResourceInfo> resourceInfos=new HashSet<>(1);
         try {
             JSONArray ja=JSONArray.parseArray(permission);
+            if(ja==null){
+                return resourceInfos;
+            }
             for(int i=0;i<ja.size();i++){
                 JSONObject jsonObject = ja.getJSONObject(i);
                 String areaid = jsonObject.getString("areaid");
@@ -338,13 +354,11 @@ public class HkAuthServiceImpl implements HkAuthService {
      * @param peoPleData 权限
      */
     private void auth(PeoPleData peoPleData) {
-        log.info("权限下发1" );
         String personId=peoPleData.getCardid();
         //权限下发do
         AuthAdd authAdd = new AuthAdd();
         authAdd.setStartTime("2018-09-03T17:30:08.000+08:00");
         authAdd.setEndTime("2035-09-06T17:30:08.000+08:00");
-        log.info("权限下发2" );
         List<PersonDatas> personAuthList = new ArrayList<>();
         PersonDatas personDatas = new PersonDatas();
         List<String> personIndexs = new ArrayList<>();
@@ -353,12 +367,15 @@ public class HkAuthServiceImpl implements HkAuthService {
         personAuthList.add(personDatas);
         authAdd.setPersonDatas(personAuthList);
         Set<ResourceInfo> resourceInfos=addResource(peoPleData);
-        log.info("权限下发3" );
-        authAdd.setResourceInfos(resourceInfos);
-        log.info("权限下发入参：" + JSON.toJSONString(authAdd).toString());
-        //添加权限配置
-        String response = hkService.getResponse(CommonConstant.HK_AUTH_ADD, authAdd);
-        log.info("权限下发返回值" + response);
+        if(resourceInfos.size()>0){
+            authAdd.setResourceInfos(resourceInfos);
+            log.info("权限下发入参：" + JSON.toJSONString(authAdd).toString());
+            //添加权限配置
+            String response = hkService.getResponse(CommonConstant.HK_AUTH_ADD, authAdd);
+            log.info("权限下发返回值" + response);
+        }else {
+            log.info("权限为空，不下发");
+        }
     }
 
 
@@ -367,7 +384,9 @@ public class HkAuthServiceImpl implements HkAuthService {
     boolean existCard(String cardNo){
         Map<String,String> param=new HashMap<>(1);
         param.put("cardNo",cardNo);
+        log.info("卡片信息入参:" + param);
         String response = hkService.getResponse(CommonConstant.HK_CARD_INFO, param);
+        log.info("卡片信息:" + response);
         JSONObject jsonObject = JSONObject.parseObject(response);
         JSONObject data = jsonObject.getJSONObject("data");
         if(data==null){

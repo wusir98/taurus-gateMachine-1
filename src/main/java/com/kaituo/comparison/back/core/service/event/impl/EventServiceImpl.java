@@ -15,6 +15,7 @@ import com.kaituo.comparison.back.core.mapper.event.TaskMapper;
 import com.kaituo.comparison.back.core.service.event.EventService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -74,15 +75,21 @@ public class EventServiceImpl implements EventService {
             Event event1 = eventMapper.selectById(event.getEventId());
             if(event1==null){
                 String personId = event.getPersonId();
-                String cardId = getCardId(personId);
                 String doorId = event.getDoorIndexCode();
                 Door door = doorMapper.selectById(doorId);
                 if(door!=null){
-                    String id = doorMapper.getPidById(doorId);
+                    Door pDoor = doorMapper.getPidById(doorId);
+                    String areaid = pDoor.getAreaid();
+                    if("32021405203103".equals(areaid)){
+                        event.setSourceSubdsitrictid("abc123");
+                    }else {
+                        event.setSourceSubdsitrictid(areaid);
+                    }
                     event.setInOut(door.getLx());
-                    event.setDoorId(id);
+                    event.setDoorId(pDoor.getId());
                 }
-                event.setIdCard(cardId);
+                event.setIdCard(personId);
+                event.setSourceCommunityId(event.getEventId());
                 eventMapper.insert(event);
             }
         }

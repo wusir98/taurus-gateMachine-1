@@ -58,7 +58,7 @@ public class AuthSchedule {
     String doorAccessListFail;
 
 
-    @Scheduled(fixedDelay= 1*1000*60)
+    //@Scheduled(fixedDelay= 5*1000*60)
     public void schedulePeople() {
 //        ResultRegister resultRegister = restTemplate.getForObject("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
 
@@ -79,7 +79,7 @@ public class AuthSchedule {
 
     }
 
-    @Scheduled(fixedDelay= 10*1000)
+    //@Scheduled(fixedDelay= 30*1000)
     public void updateStatus() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("token", token);
@@ -89,6 +89,7 @@ public class AuthSchedule {
         List<PeoPleData> command2 = resultRegister2.getCommand();
         command.addAll(command2);
         hkAuthService.qr(command);
+
 
 
     }

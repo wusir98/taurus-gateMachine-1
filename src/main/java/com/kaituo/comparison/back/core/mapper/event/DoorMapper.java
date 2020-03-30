@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface DoorMapper extends BaseMapper<Door> {
-    String getPidById(@Param("id") String id);
+    Door getPidById(@Param("id") String id);
 
     List<Door> getAuthDoor(@Param("areaId") String areaId
             ,@Param("unitNo") String unitNo);

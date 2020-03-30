@@ -16,8 +16,10 @@ public class Door implements Serializable {
     private String lx;
     private String areaid;
     private String unitno;
-
+    private String doorname;
     private String resourceType;
 
     private String cannelNo;
+    private String cannel;
+    private int flag;
 }

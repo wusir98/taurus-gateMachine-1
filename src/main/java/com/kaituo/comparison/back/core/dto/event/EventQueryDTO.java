@@ -12,4 +12,5 @@ public class EventQueryDTO implements Serializable {
     private int pageSize;
     private String sort="eventTime";
     private String order="asc";
+    private int eventType;
 }

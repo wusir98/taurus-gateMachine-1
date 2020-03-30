@@ -9,10 +9,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("T_EVENT")
+@TableName("SMART_COMMUNITY.DISTRICT_T_EVENT")
 public class Event implements Serializable {
-    @TableId
+
+    @TableField(exist = false)
     private String eventId;
+    @TableId("source_CommunityId")
+    private String sourceCommunityId;
 
     private String eventName;
 
@@ -49,4 +52,6 @@ public class Event implements Serializable {
 
     private String doorId;
 
+    @TableField("SOURCE_SUBDISTRICTID")
+    private String sourceSubdsitrictid;
 }

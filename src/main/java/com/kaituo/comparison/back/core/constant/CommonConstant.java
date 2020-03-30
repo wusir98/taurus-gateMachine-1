@@ -54,12 +54,19 @@ public class CommonConstant {
     public static final String HK_TASK_ADD = "/api/acps/v1/download/configuration/task/add";
     //一卡通权限管理--开始下载任务
     public static final String HK_TASK_START = "/api/acps/v1/authDownload/task/start";
-    //一卡通权限管理--查询下载任务进度
+    //一卡通权限管理--开始下载任务
     public static final String HK_TASK_PROGRESS = "/api/acps/v1/authDownload/task/progress";
+    //一卡通权限管理--查询下载任务进度
+    public static final String HK_TASK_DELETE = "/api/acps/v1/authDownload/task/deletion";
     //一卡通权限管理--查询单个权限条目
     public static final String HK_AUTH_QUERY= "/api/acps/v1/auth_item/single/search";
     //卡片退卡
     public static final String HK_CARD_DELETION = "/api/cis/v1/card/deletion";
     //删除权限
     public static final String HK_AUTH_DELETE = "/api/acps/v1/auth_config/delete";
+    //分页获取资源
+    public static final String HK_RESOURCE_LIST = "/api/irds/v1/deviceResource/resources";
+    //获取单个资源
+    public static final String HK_DOOR_LIST= "/api/resource/v1/acsDoor/advance/acsDoorList";
+
 }

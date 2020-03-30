@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kaituo.comparison.back.core.mapper.event.DoorMapper">
-    <select id="getPidById" resultType="String">
+    <select id="getPidById" resultType="com.kaituo.comparison.back.core.entity.event.Door">
 
-        select id from T_DOOR
+        select * from T_DOOR
             where parent_id='0'
             start with id=#{id}
             connect by prior parent_id=id

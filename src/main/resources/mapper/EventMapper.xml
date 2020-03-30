@@ -3,7 +3,7 @@
 <mapper namespace="com.kaituo.comparison.back.core.mapper.event.EventMapper">
     <select id="countMaxEventTime" resultType="Date">
 
-        select max (event_time) from T_EVENT
+        select max (event_time) from SMART_COMMUNITY.DISTRICT_T_EVENT
     </select>
 
 </mapper>
