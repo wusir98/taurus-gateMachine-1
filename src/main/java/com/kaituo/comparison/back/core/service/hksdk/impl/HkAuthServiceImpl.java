@@ -86,19 +86,25 @@ public class HkAuthServiceImpl implements HkAuthService {
         listPeoPleData.forEach(peoPleData-> {
             Set<ResourceInfo> resourceInfos=addResource2(peoPleData);
             boolean flag=true;
+            boolean isNew=false;
             A:for(ResourceInfo resourceInfo:resourceInfos){
                 AuthSingleQueryDTO authSingleQueryDTO=new AuthSingleQueryDTO();
                 authSingleQueryDTO.setPersonId(peoPleData.getCardid());
                 authSingleQueryDTO.setResourceInfo(resourceInfo);
-                log.info("权限删除入参" + authSingleQueryDTO);
+                log.info("权限确认入参" + authSingleQueryDTO);
                 String respDeletePeople = hkService.getResponse(CommonConstant.HK_AUTH_QUERY, authSingleQueryDTO);
-                log.info("权限删除返回值" + respDeletePeople);
+                log.info("权限确认返回值" + respDeletePeople);
                 JSONObject jsonObject = JSONObject.parseObject(respDeletePeople);
                 JSONObject data = jsonObject.getJSONObject("data");
-                int personStatus=0;
+                Integer personStatus=0;
                 try {
                     personStatus = data.getInteger("personStatus");
                 }catch (Exception e){
+                }
+                if(personStatus==null){
+                    isNew=true;
+                    flag=false;
+                    break A;
                 }
                 if(personStatus!=3){
                     flag=false;
@@ -110,7 +116,23 @@ public class HkAuthServiceImpl implements HkAuthService {
                 log.info("下发指令成功:personId=" +peoPleData.getId());
             }else {
                 commitResult(peoPleData.getId(),"3");
-                log.info("zg下发指令失败:personId=" +peoPleData.getId());
+                if(isNew){
+                    AuthDelete authDelete = new AuthDelete();
+                    List<PersonDatas> personDatasList = new ArrayList<>();
+                    List<String> personDeleteIndexs = new ArrayList<>();
+                    personDeleteIndexs.add(peoPleData.getCardid());
+                    PersonDatas personDatas=new PersonDatas();
+                    personDatas.setIndexCodes(personDeleteIndexs);
+                    personDatasList.add(personDatas);
+                    authDelete.setPersonDatas(personDatasList);
+                    log.info("重新下发权限" +peoPleData.getCardid());
+                    log.info("权限删除入参:" + authDelete);
+                    String response = hkService.getResponse(CommonConstant.HK_AUTH_DELETE, authDelete);
+                    log.info("权限删除返回值" + response);
+                    //3.权限下发信息
+                    auth(peoPleData);
+                }
+                log.info("下发指令失败:personId=" +peoPleData.getId());
             }
         });
     }

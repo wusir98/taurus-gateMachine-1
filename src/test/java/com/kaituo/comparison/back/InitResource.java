@@ -1,39 +1,24 @@
-package com.kaituo.comparison.back.core.schedule;
+package com.kaituo.comparison.back;
 
-import com.kaituo.comparison.back.core.constant.CommonConstant;
-import com.kaituo.comparison.back.core.dto.app.PeoPleData;
 import com.kaituo.comparison.back.core.dto.app.ResultRegister;
-import com.kaituo.comparison.back.core.dto.app.ResultResource;
-import com.kaituo.comparison.back.core.dto.hksdk.AuthSingleQueryDTO;
 import com.kaituo.comparison.back.core.service.hksdk.HkAuthService;
 import com.kaituo.comparison.back.core.service.hksdk.HkService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
-/**
- * @Description:
- * @Author: yedong
- * @Date: 2020/2/22 15:22
- * @Modified by:
- */
-@Component
-@Configuration
-@EnableScheduling
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @Slf4j
-public class AuthSchedule {
-
+public class InitResource {
     @Autowired
     HkService hkService;
 
@@ -57,17 +42,24 @@ public class AuthSchedule {
     @Value("${xh.doorAccessListFail}")
     String doorAccessListFail;
 
-
-    @Scheduled(fixedDelay= 5*1000*60)
+    @org.junit.Test
+    //@Scheduled(fixedDelay= 5*1000*60)
     public void schedulePeople() {
 //        ResultRegister resultRegister = restTemplate.getForObject("http://192.168.110.132:8080/qzf/front/anon/doorAccessList.json?synctag=1", ResultRegister.class);
-        log.info("开始下发权限");
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("token", token);
-
+        System.out.println(11);
         //已下发人员
         ResultRegister resultRegister = restTemplate.exchange(doorAccessListAuth, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
 
+     /*   try {
+            Thread.sleep(10*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+        System.out.println(resultRegister);
 
         if (!CollectionUtils.isEmpty(resultRegister.getCommand())) {
             log.info("==================新增权限开始");
@@ -75,24 +67,7 @@ public class AuthSchedule {
             hkAuthService.addAuth(resultRegister);
         }
         //4.人——权限遍历完，一起提交
-        hkAuthService.startTask();
-
-    }
-
-    @Scheduled(fixedDelay= 5*1000*60)
-    public void updateStatus() {
-        log.info("开始确认权限");
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("token", token);
-        ResultRegister resultRegister = restTemplate.exchange(doorAccessListWait, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
-        ResultRegister resultRegister2 = restTemplate.exchange(doorAccessListFail, HttpMethod.GET, new HttpEntity<String>(headers), ResultRegister.class).getBody();
-        List<PeoPleData> command = resultRegister.getCommand();
-        List<PeoPleData> command2 = resultRegister2.getCommand();
-        command.addAll(command2);
-      //  System.out.println(command);
-        hkAuthService.qr(command);
-
-
+        //hkAuthService.startTask();
 
     }
 }
