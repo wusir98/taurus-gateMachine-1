@@ -29,17 +29,17 @@ public class ApiController {
 
     @PostMapping("/api")
     public String api(@RequestBody Param param, @RequestHeader(value = "token") String token) {
-        Log log = logService.addLog(param, token);
+        //Log log = logService.addLog(param, token);
 
-        boolean allow = hkService.isAllow(param.getUri(), token);
+        //boolean allow = hkService.isAllow(param.getUri(), token);
         if (true) {
             String response = "";
             try {
                 response = hkService.getResponse(param.getUri(), param.getParam());
                 JSONObject jsonObject = JSON.parseObject(response);
-                log.setMsg(jsonObject.getString("msg"));
-                log.setResult(jsonObject.getString("code"));
-                logService.update(log);
+//                log.setMsg(jsonObject.getString("msg"));
+//                log.setResult(jsonObject.getString("code"));
+//                logService.update(log);
 
 
 //                hkService.startHkAync();
@@ -47,19 +47,19 @@ public class ApiController {
 
                 return response;
             } catch (Exception e) {
-                ApiController.log.error(e.getMessage(), e);
-                log.setMsg("other error");
-                log.setResult("0x00000001");
-                logService.update(log);
+                log.error(e.getMessage(), e);
+//                log.setMsg("other error");
+//                log.setResult("0x00000001");
+//                logService.update(log);
                 return response;
             }
         } else {
             ResponseResult result = new ResponseResult();
-            log.setMsg("no permission");
-            log.setResult("0x00000000");
+//            log.setMsg("no permission");
+//            log.setResult("0x00000000");
+//            logService.update(log);
             result.setCode("0x00000000");
             result.setMsg("no permission");
-            logService.update(log);
             return JSON.toJSONString(result);
         }
     }

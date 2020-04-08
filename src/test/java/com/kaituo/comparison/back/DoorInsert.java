@@ -105,6 +105,7 @@ public class DoorInsert {
         try{
             doorMapper.insert(door);
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("插入失败");
         }
     }
